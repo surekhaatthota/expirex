@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ExpireX</title>
+<style>
+:root{--bg:#fff7ec;--ink:#2b1d14;--mute:#7a665a;--card:#ffffffd9;--line:#ecdcc8;--g:#2e9e5b;--o:#f08a1c;--r:#e0352b;--x:#6b6b73;--ac:#ff6b35;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1410;--ink:#fbeedd;--mute:#b79f8d;--card:#2a1f19d9;--line:#46352b}}
+:root[data-theme="dark"]{--bg:#1b1410;--ink:#fbeedd;--mute:#b79f8d;--card:#2a1f19d9;--line:#46352b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Trebuchet MS","Segoe UI",system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:"Arial Rounded MT Bold","Trebuchet MS",sans-serif;margin:0}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:12px;padding:.6rem 1rem;background:var(--ac);color:#fff;font-weight:700}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+input,select{width:100%;padding:.6rem .8rem;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.hide{display:none!important}
+#login{min-height:100vh;display:grid;place-items:center;overflow:hidden;perspective:900px;background:radial-gradient(circle at 30% 20%,#ffcf8a,#ff8a5c 45%,#7a2e5e);padding:1rem;position:relative}
+#scene{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .15s}
+.f{position:absolute;font-size:var(--s);animation:fl var(--d) ease-in-out infinite alternate;filter:drop-shadow(0 14px 10px #0004)}
+@keyframes fl{from{transform:translate3d(0,0,var(--z)) rotateY(-25deg) rotateZ(-8deg)}to{transform:translate3d(0,-26px,var(--z)) rotateY(25deg) rotateZ(8deg)}}
+.glass{position:relative;z-index:2;width:min(380px,100%);padding:2rem;border-radius:26px;background:#ffffff2e;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid #fff7;box-shadow:0 30px 60px #0004;color:#fff}
+.glass h1{font-size:2.4rem;letter-spacing:.04em}
+.glass p{margin:.2rem 0 1rem}
+.glass input{background:#ffffffcc;color:#2b1d14;margin-bottom:.7rem}
+.glass button{width:100%;background:#2b1d14}
+#err{color:#ffe0dc;font-weight:700;min-height:1.4em}
+header{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.8rem clamp(1rem,4vw,2rem);flex-wrap:wrap}
+nav{display:flex;gap:.4rem;overflow-x:auto;padding:0 clamp(1rem,4vw,2rem) .6rem;max-width:1080px;margin:0 auto}
+nav button{background:transparent;color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:1080px;margin:0 auto;padding:.5rem clamp(1rem,4vw,2rem) 3rem}
+.pg{display:grid;gap:1.2rem}
+.sum,.row,.chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.pill{padding:.4rem .9rem;border-radius:99px;color:#fff;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.9rem}
+.item{background:var(--card);border:1px solid var(--line);border-left:8px solid var(--c);border-radius:16px;padding:.8rem;display:grid;gap:.5rem}
+.item .top{display:flex;gap:.7rem;align-items:center}
+.em{font-size:2rem;width:50px;height:50px;display:grid;place-items:center;flex:none;border-radius:12px;overflow:hidden;background:var(--line)}
+.em img{width:100%;height:100%;object-fit:cover}
+.item small,.note{color:var(--mute)}.note{font-size:.88rem}
+.st{color:var(--c);font-weight:700}
+.item.ex{opacity:.78}
+.acts{display:flex;gap:.4rem;flex-wrap:wrap}
+.acts button{padding:.3rem .6rem;font-size:.85rem;background:transparent;color:var(--ink);border:1px solid var(--line)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.1rem}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin-top:.8rem}
+.chip{padding:.3rem .8rem;border-radius:99px;background:var(--line);cursor:default}
+button.chip{color:var(--ink);font-weight:400;border-radius:99px}button.chip.on{background:var(--ac);color:#fff}
+#vid{width:100%;max-height:220px;border-radius:12px;margin-top:.6rem;background:#000}
+.alert{background:var(--r);color:#fff;border-radius:14px;padding:.7rem 1rem;font-weight:700}
+.bar{height:14px;border-radius:7px;background:var(--ac);min-width:4px}
+.stat{display:grid;grid-template-columns:110px 1fr 30px;gap:.6rem;align-items:center;margin:.3rem 0}
+.big{font-size:2.4rem;font-weight:800}
+details{margin-top:.5rem}summary{cursor:pointer;color:var(--ac);font-weight:700}
+.shop{display:flex;gap:.6rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--line)}
+.shop input[type=checkbox]{width:22px;height:22px}.shop.done span{text-decoration:line-through;color:var(--mute)}
+#toast{position:fixed;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.6rem 1rem;border-radius:12px;z-index:9}
+.f{cursor:pointer}.item{transition:transform .15s}
+.tabs{display:flex;gap:.4rem;margin:.6rem 0}.tabs button{flex:1;background:#ffffff33}.tabs button.on{background:#2b1d14}
+.cf{position:fixed;pointer-events:none;z-index:10;font-size:1.4rem;animation:pop .9s ease-out forwards}
+@keyframes pop{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cd{aspect-ratio:1;border:1px solid var(--line);border-radius:10px;padding:2px;background:var(--card);color:var(--ink);font-weight:400;display:flex;flex-direction:column;align-items:center;font-size:.85rem}
+.cd.t{outline:2px solid var(--ac)}.cd.s{background:var(--line)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin:1px}
+@media (prefers-reduced-motion:reduce){.f{animation:none}#scene{transition:none}}
+</style></head>
+<body>
+<div id="login">
+ <div id="scene"></div>
+ <div class="glass">
+  <h1>EXPIRΞX</h1><p>Never waste. Always taste.</p>
+  <div class="tabs" id="tabs"><button data-t="in" class="on">Log in</button><button data-t="up">Sign up</button></div>
+  <input id="nm" placeholder="Your name" autocomplete="username">
+  <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+  <input id="pw2" type="password" placeholder="Confirm password" class="hide" autocomplete="new-password">
+  <label style="font-size:.85rem;display:block;margin-bottom:.4rem"><input id="showpw" type="checkbox" style="width:auto;margin:0 .4rem 0 0">Show password</label>
+  <div id="meter" style="font-size:.85rem;min-height:1.2em"></div>
+  <div id="err" role="alert"></div>
+  <button id="go">Log in</button>
+  <p class="note" id="mode" style="color:#fff;margin-top:.8rem;font-size:.85rem"></p>
+ </div>
+</div>
+
+<div id="app" class="hide">
+ <header><h2>EXPIRΞX</h2><div class="row"><span id="hi" class="note" style="align-self:center"></span><button class="ghost" id="out">Log out</button></div></header>
+ <nav id="nav"></nav>
+ <main>
+  <section class="pg" id="p-home">
+   <div id="alerts"></div>
+   <div class="sum" id="sum"></div>
+   <div class="row"><input id="q" placeholder="Search your food" style="flex:1;min-width:160px"><div class="chips" id="flt"></div></div>
+   <div class="grid" id="grid"></div>
+  </section>
+  <section class="pg hide" id="p-add">
+   <div class="box"><h3>Add food</h3>
+    <div class="row" style="margin-top:.8rem"><input id="bc" inputmode="numeric" placeholder="Barcode number" style="flex:1;min-width:140px"><button class="ghost" id="lk">Look up</button><button class="ghost" id="sc">Scan</button></div>
+    <video id="vid" class="hide" playsinline muted></video>
+    <p class="note" id="bcn">Scan or type a barcode. Demo codes: 8901233003358, 8901262150378, 8901063010055.</p>
+    <div class="chips" id="qk" style="margin-top:.8rem"></div><p class="note">Tap a food to fill in its usual shelf life.</p>
+    <form id="f">
+     <input id="n" placeholder="Product name" required>
+     <select id="c"></select>
+     <input id="qty" type="number" min="1" value="1" aria-label="Quantity">
+     <input id="d" type="date" required aria-label="Expiry date">
+     <input id="ph" type="file" accept="image/*" aria-label="Photo (optional)">
+     <button>Add to ExpireX</button>
+    </form></div>
+  </section>
+  <section class="pg hide" id="p-rec"><div><h3>Use it up</h3><p class="note">Recipes ranked by how much expiring food they use.</p></div><div class="grid" id="rec"></div></section>
+  <section class="pg hide" id="p-shop">
+   <div class="box"><h3>Shopping list</h3>
+    <div class="row" style="margin-top:.8rem"><input id="sn" placeholder="Add an item" style="flex:1"><button id="sa">Add</button></div>
+    <div id="sl"></div><div class="row" style="margin-top:.8rem"><button class="ghost" id="sclr">Clear checked</button></div></div>
+  </section>
+  <section class="pg hide" id="p-cal"><div class="box"><div class="row" style="justify-content:space-between;align-items:center"><button class="ghost" id="cprev" aria-label="Previous month">‹</button><h3 id="cmon"></h3><button class="ghost" id="cnext" aria-label="Next month">›</button></div><div class="cg" id="cgrid" style="margin-top:.8rem"></div></div><div class="box" id="cday"></div></section>
+  <section class="pg hide" id="p-stats"><div class="grid" id="kpi"></div><div class="box"><h3>By category</h3><div id="cat" style="margin-top:.6rem"></div></div><div class="box"><h3>Recent history</h3><div id="hist"></div></div></section>
+  <section class="pg hide" id="p-set">
+   <div class="box"><h3>Settings</h3>
+    <form id="sf"><label>Display name<input id="sname"></label><label>Red when ≤ days<input id="sred" type="number" min="0" max="10"></label><label>Orange when ≤ days<input id="sor" type="number" min="3" max="60"></label><label id="pinl">App lock PIN (4-8 digits)<input id="spin" type="password" inputmode="numeric" placeholder="Type off to remove"></label><button>Save settings</button></form></div>
+   <div class="box"><h3>Your data</h3><p class="note" id="where"></p><div class="row" style="margin-top:.6rem"><button class="ghost" id="exp">Export CSV</button><button class="ghost" id="smp">Load sample food</button><button class="ghost" id="rst" style="color:var(--r)">Delete all my data</button></div></div>
+  </section>
+ </main>
+</div>
+<div id="toast" class="hide" role="status"></div>
+
+<script>
+const $=id=>document.getElementById(id),DAY=864e5;
+const CATS={Dairy:'🥛',Fruit:'🍓',Vegetables:'🥕',Bakery:'🍞',Snacks:'🍪','Meat & eggs':'🥚',Other:'🍽️'};
+$('c').innerHTML=Object.keys(CATS).map(c=>`<option>${c.replace('&','&amp;')}</option>`).join('');
+const BAR={'8901233003358':['Dairy Milk Chocolate','Snacks'],'8901262150378':['Milk','Dairy'],'8901063010055':['Biscuits','Snacks']};
+const REC=[
+ {n:'Pancakes',e:'🥞',k:/milk|egg|banana|berry/i,t:'20 min',s:'Whisk 1 cup flour, 1 egg, 1 cup milk. Cook ladles on a hot pan until golden.'},
+ {n:'Milk cake',e:'🍰',k:/milk/i,t:'45 min',s:'Simmer 1 L milk with sugar until thick, add cardamom, set and cut into squares.'},
+ {n:'Milkshake',e:'🥤',k:/milk|banana|choc|strawberr/i,t:'5 min',s:'Blend cold milk, fruit or chocolate and a spoon of sugar with ice.'},
+ {n:'Tomato pasta',e:'🍝',k:/tomato/i,t:'25 min',s:'Sauté garlic, add chopped tomatoes, simmer 15 min, toss with cooked pasta.'},
+ {n:'Tomato soup',e:'🍲',k:/tomato|carrot|potato/i,t:'30 min',s:'Simmer tomatoes with onion and stock, blend smooth, season.'},
+ {n:'Homemade pizza',e:'🍕',k:/tomato|bread|cheese/i,t:'35 min',s:'Spread tomato sauce on a base, add toppings and cheese, bake at 220°C.'},
+ {n:'Strawberry jam',e:'🍓',k:/strawberr|berry/i,t:'30 min',s:'Cook berries with half their weight in sugar and lemon until thick.'},
+ {n:'Banana bread',e:'🍌',k:/banana/i,t:'60 min',s:'Mash bananas, mix with flour, egg, sugar and butter, bake 50 min at 175°C.'},
+ {n:'Omelette',e:'🍳',k:/egg|tomato|cheese/i,t:'10 min',s:'Beat eggs, pour into a hot pan, add chopped veg, fold and serve.'},
+ {n:'French toast',e:'🍞',k:/bread|egg|milk/i,t:'15 min',s:'Dip bread in egg and milk, pan-fry until golden.'},
+ {n:'Veg soup',e:'🥣',k:/carrot|potato|tomato|broccoli|onion/i,t:'30 min',s:'Simmer chopped vegetables in stock until soft, season and serve.'},
+ {n:'Aloo curry',e:'🥘',k:/potato|tomato/i,t:'30 min',s:'Fry onion and spices, add potato and tomato, simmer until tender.'},
+ {n:'Guacamole toast',e:'🥑',k:/avocado|bread|tomato/i,t:'10 min',s:'Mash avocado with lemon and salt, spread on toasted bread.'},
+ {n:'Fruit smoothie',e:'🥗',k:/banana|berry|strawberr|apple|mango|milk/i,t:'5 min',s:'Blend fruit with milk or yogurt until smooth.'},
+ {n:'Hot chocolate',e:'🍫',k:/choc|milk/i,t:'10 min',s:'Melt chocolate into warm milk and whisk until smooth.'}
+];
+let S=null,ctx={},FLT='All',chain=Promise.resolve();
+const blank=()=>({items:[],hist:[],shop:[],set:{name:'',red:2,or:14}});
+function toast(m,fn){const t=$('toast');t.textContent=m+' ';if(fn){const b=document.createElement('button');b.textContent='Undo';b.className='ghost';b.style.cssText='margin-left:.5rem;padding:.2rem .6rem;color:var(--bg);border-color:var(--bg)';b.onclick=()=>{fn();t.classList.add('hide')};t.appendChild(b)}t.classList.remove('hide');clearTimeout(toast.i);toast.i=setTimeout(()=>t.classList.add('hide'),fn?5000:2400)}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function today(){const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate())}
+function iso(n){const t=new Date(today().getTime()+n*DAY);return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')}
+function days(it){const [y,m,d]=it.d.split('-').map(Number);return Math.round((new Date(y,m-1,d)-today())/DAY)}
+function status(n){const r=S.set.red,o=S.set.or;
+ if(n<0)return{k:'Expired',c:'var(--x)',t:`Expired ${-n} day${n==-1?'':'s'} ago ⚫`};
+ if(n<=r)return{k:'Red',c:'var(--r)',t:n==0?'Expires today 🔴':`Expires in ${n} day${n==1?'':'s'} 🔴`};
+ if(n<=o)return{k:'Orange',c:'var(--o)',t:`Expires in ${n} days 🟠`};
+ return{k:'Green',c:'var(--g)',t:`Expires in ${n} days 🟢`}}
+
+/* storage: private per-account db when available, else per-user localStorage */
+function persist(){
+ if(ctx.doc){const snap=JSON.parse(JSON.stringify(S));chain=chain.then(()=>ctx.doc.set(snap)).catch(()=>toast('Could not save. Check your connection.'))}
+ else{try{localStorage.setItem('ex_data_'+ctx.key,JSON.stringify(S))}catch(e){toast('Could not save in this browser.')}}}
+const ready=(async()=>{try{
+ if(!window.claude||!claude.use)return;
+ const u=await claude.use('user'),db=await claude.use('db');
+ const id=u&&await u.id();
+ if(db&&id)ctx.doc=db.doc('data/users/'+id+'/store');
+}catch(e){ctx.doc=null}})();
+
+async function hash(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('expirex:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(s)}}
+let TAB='in';
+function setTab(t){TAB=t;[...$('tabs').children].forEach(b=>b.classList.toggle('on',b.dataset.t===t));$('pw2').classList.toggle('hide',!(t=='up'&&!ctx.doc));$('go').textContent=ctx.doc?'Continue':(t=='up'?'Create account':'Log in');$('err').textContent='';$('meter').textContent=''}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.t)};
+$('showpw').onchange=e=>{$('pw').type=$('pw2').type=e.target.checked?'text':'password'};
+$('pw').oninput=()=>{const v=$('pw').value;let n=0;if(v.length>=6)n++;if(v.length>=10)n++;if(/[A-Z]/.test(v)&&/[a-z]/.test(v))n++;if(/\d/.test(v)&&/[^A-Za-z0-9]/.test(v))n++;$('meter').textContent=TAB=='up'&&!ctx.doc&&v?['Weak','Okay','Good','Strong','Very strong'][n]+' password':''};
+function resetLogin(){['nm','pw','tabs'].forEach(i=>$(i).classList.remove('hide'));$('nm').value=$('pw').value=$('pw2').value='';$('pw').placeholder='Password';ctx.pin=false;setTab('in')}
+async function start(){await ready;resetLogin();
+ if(ctx.doc){$('tabs').classList.add('hide');$('pw').classList.add('hide');setTab('in');$('mode').textContent='Signed in with your Claude account. Your food list is private to you.';
+  try{const d=await ctx.doc.get();if(d.exists){S=Object.assign(blank(),d.data());S.set=Object.assign(blank().set,S.set);if(S.set.name){
+   if(S.set.pin){ctx.pin=true;$('nm').classList.add('hide');$('pw').classList.remove('hide');$('pw').placeholder='Enter your PIN';$('mode').textContent='Your list is PIN-locked.';return}
+   enter();return}}}catch(e){}}
+ else $('mode').textContent='Accounts here live in this browser only. Each name has its own private list.'}
+$('go').onclick=async()=>{const name=$('nm').value.trim(),pw=$('pw').value,E=m=>{$('err').textContent=m};E('');await ready;
+ if(ctx.doc){
+  if(ctx.pin){if(await hash(pw)!==S.set.pin)return E('Wrong PIN.');ctx.pin=false;enter();return}
+  if(!name)return E('Enter your name.');
+  if(!S){try{const d=await ctx.doc.get();S=d.exists?Object.assign(blank(),d.data()):blank();S.set=Object.assign(blank().set,S.set)}catch(e){return E('Could not load your data.')}}
+  S.set.name=S.set.name||name;persist();enter();return}
+ if(!name)return E('Enter your name.');
+ ctx.key=name.toLowerCase();let acct=null;try{acct=localStorage.getItem('ex_acct_'+ctx.key)}catch(e){}
+ if(TAB=='up'){
+  if(acct)return E('That name is taken. Switch to Log in.');
+  if(pw.length<6)return E('Use at least 6 characters.');
+  if(pw!==$('pw2').value)return E('Passwords do not match.');
+  try{localStorage.setItem('ex_acct_'+ctx.key,await hash(pw))}catch(e){return E('Could not create the account in this browser.')}
+  S=blank()}
+ else{
+  if(!acct)return E('No account with this name here. Switch to Sign up.');
+  if(acct!==await hash(pw))return E('Wrong password.');
+  let d=null;try{d=JSON.parse(localStorage.getItem('ex_data_'+ctx.key))}catch(e){}
+  S=Object.assign(blank(),d||{});S.set=Object.assign(blank().set,S.set)}
+ S.set.name=S.set.name||name;persist();enter()};
+$('pw').onkeydown=e=>{if(e.key==='Enter')$('go').click()};
+$('pw2').onkeydown=$('pw').onkeydown;
+$('out').onclick=()=>{stopScan();S=null;$('app').classList.add('hide');$('login').classList.remove('hide');start()};
+function enter(){$('login').classList.add('hide');$('app').classList.remove('hide');$('hi').textContent='Hi, '+S.set.name;go('home')}
+
+/* nav */
+const PAGES=[['home','🏠 Dashboard'],['add','➕ Add food'],['rec','👩‍🍳 Recipes'],['shop','🛒 Shopping'],['cal','📅 Calendar'],['stats','📊 Insights'],['set','⚙️ Settings']];
+$('nav').innerHTML=PAGES.map(p=>`<button data-p="${p[0]}">${p[1]}</button>`).join('');
+$('nav').onclick=e=>{const b=e.target.closest('button');if(b)go(b.dataset.p)};
+function go(p){PAGES.forEach(x=>{$('p-'+x[0]).classList.toggle('hide',x[0]!==p)});
+ [...$('nav').children].forEach(b=>b.classList.toggle('on',b.dataset.p===p));if(p!=='add')stopScan();render()}
+
+/* render */
+function sorted(){return [...S.items].sort((a,b)=>days(a)-days(b))}
+function render(){home();recipes();shop();cal();stats();settings()}
+function home(){
+ const cnt={Green:0,Orange:0,Red:0,Expired:0};S.items.forEach(i=>cnt[status(days(i)).k]++);
+ $('sum').innerHTML=[['Red','var(--r)','Use soon'],['Orange','var(--o)','Approaching'],['Green','var(--g)','Fresh'],['Expired','var(--x)','Expired']].map(([k,c,l])=>`<span class="pill" style="background:${c}">${cnt[k]} ${l}</span>`).join('');
+ const hot=S.items.filter(i=>{const n=days(i);return n>=0&&n<=1});
+ $('alerts').innerHTML=hot.length?`<div class="alert">⏰ ${hot.map(i=>esc(i.n)).join(', ')} ${hot.length>1?'expire':'expires'} today or tomorrow. Check the Recipes page.</div>`:'';
+ $('flt').innerHTML=['All','Red','Orange','Green','Expired'].map(f=>`<button class="chip ${f==FLT?'on':''}" data-f="${f}">${f}</button>`).join('');
+ const q=$('q').value.toLowerCase();
+ const list=sorted().filter(i=>(FLT=='All'||status(days(i)).k==FLT)&&i.n.toLowerCase().includes(q));
+ $('grid').innerHTML=list.length?list.map(it=>{const s=status(days(it)),pic=it.img?`<img src="${it.img}" alt="">`:CATS[it.c]||'🍽️';
+  return `<div class="item ${s.k=='Expired'?'ex':''}" style="--c:${s.c}"><div class="top"><div class="em">${pic}</div><div><b>${esc(it.n)}</b><br><small>${esc(it.c)} · ${it.d}</small><div class="st">${s.t}</div></div>${ring(days(it),s.c)}</div>
+  <div class="acts"><button data-a="dec" data-id="${it.id}" aria-label="Use one">− 1</button><span class="note" style="align-self:center">Qty ${it.q}</span><button data-a="inc" data-id="${it.id}" aria-label="Add one">+ 1</button><button data-a="used" data-id="${it.id}">✔ Used</button><button data-a="waste" data-id="${it.id}">🗑 Wasted</button></div></div>`}).join(''):`<div class="box" style="grid-column:1/-1"><b>${S.items.length?'No matches.':'Your list is empty.'}</b><p class="note">${S.items.length?'Try another search or filter.':'Add your first item, or load sample food from Settings.'}</p><button data-go="add">Add food</button></div>`}
+$('q').oninput=home;
+$('flt').onclick=e=>{const b=e.target.closest('button');if(b){FLT=b.dataset.f;home()}};
+$('grid').onclick=e=>{const g=e.target.closest('[data-go]');if(g)return go(g.dataset.go);
+ const b=e.target.closest('button[data-a]');if(!b)return;const it=S.items.find(i=>i.id==b.dataset.id);if(!it)return;
+ const snap=JSON.stringify(S),a=b.dataset.a;let msg='';
+ if(a=='inc')it.q++;
+ else if(a=='dec'){it.q--;if(it.q<1){log(it,'used');S.items=S.items.filter(i=>i!==it);msg='Used the last one.'}}
+ else{const used=a=='used';log(it,used?'used':'wasted');S.items=S.items.filter(i=>i!==it);
+  if(used){burst(e.clientX,e.clientY,['🎉','✨','🥳']);msg='Nice, no waste.'}else msg='Marked as wasted.';
+  if(!S.shop.some(x=>x.n.toLowerCase()==it.n.toLowerCase())){S.shop.push({n:it.n,done:false});msg+=' Added to shopping list.'}}
+ persist();render();if(msg)toast(msg,()=>{S=JSON.parse(snap);persist();render()})};
+function log(it,r){S.hist.unshift({n:it.n,c:it.c,r,at:iso(0)});S.hist=S.hist.slice(0,200)}
+
+function recipes(){
+ const act=sorted().filter(i=>days(i)>=0);
+ const rs=REC.map(r=>{const m=act.filter(i=>r.k.test(i.n));return{r,m,score:m.reduce((a,i)=>a+Math.max(1,15-days(i)),0)}}).filter(x=>x.m.length).sort((a,b)=>b.score-a.score);
+ $('rec').innerHTML=rs.length?rs.map(({r,m})=>`<div class="box"><b>${r.e} ${r.n}</b> <small class="note">· ${r.t}</small><div class="chips" style="margin-top:.5rem">${m.map(i=>{const s=status(days(i));return `<span class="chip" style="border:2px solid ${s.c}">${esc(i.n)}</span>`}).join('')}</div><details><summary>How to make it</summary><p>${r.s}</p></details><button data-cook="${REC.indexOf(r)}" style="margin-top:.6rem">🍳 I cooked this</button></div>`).join(''):`<div class="box"><b>No matching recipes yet.</b><p class="note">Add foods like milk, tomatoes, bananas, eggs or bread and ideas will appear here.</p></div>`}
+
+function shop(){
+ $('sl').innerHTML=S.shop.length?S.shop.map((s,i)=>`<label class="shop ${s.done?'done':''}"><input type="checkbox" data-i="${i}" ${s.done?'checked':''}><span>${esc(s.n)}</span></label>`).join(''):'<p class="note">Nothing to buy. Add items you need, or restock from your history.</p>'}
+$('sa').onclick=()=>{const v=$('sn').value.trim();if(!v)return;S.shop.push({n:v,done:false});$('sn').value='';persist();shop()};
+$('sn').onkeydown=e=>{if(e.key==='Enter')$('sa').click()};
+$('sl').onchange=e=>{const i=e.target.dataset.i;if(i==null)return;S.shop[i].done=e.target.checked;persist();shop()};
+$('sclr').onclick=()=>{S.shop=S.shop.filter(s=>!s.done);persist();shop()};
+
+function stats(){
+ const u=S.hist.filter(h=>h.r=='used').length,w=S.hist.length-u,rate=S.hist.length?Math.round(u/S.hist.length*100):null;
+ $('kpi').innerHTML=[[S.items.length,'Items tracked'],[u,'Used up'],[w,'Wasted'],[rate===null?'-':rate+'%','Waste-free rate']].map(([a,b])=>`<div class="box"><div class="big">${a}</div><div class="note">${b}</div></div>`).join('');
+ const by={};S.items.forEach(i=>by[i.c]=(by[i.c]||0)+1);const mx=Math.max(1,...Object.values(by));
+ $('cat').innerHTML=Object.keys(by).length?Object.entries(by).map(([c,n])=>`<div class="stat"><span>${CATS[c]||''} ${esc(c)}</span><div class="bar" style="width:${n/mx*100}%"></div><b>${n}</b></div>`).join(''):'<p class="note">Add food to see your categories.</p>';
+ $('hist').innerHTML=S.hist.length?S.hist.slice(0,12).map(h=>`<div class="shop"><span>${h.r=='used'?'✅':'🗑'} ${esc(h.n)}</span><small class="note" style="margin-left:auto">${h.at}</small></div>`).join(''):'<p class="note">When you mark food as used or wasted it appears here.</p>'}
+
+function settings(){$('pinl').classList.toggle('hide',!ctx.doc);$('sname').value=S.set.name;$('sred').value=S.set.red;$('sor').value=S.set.or;
+ $('where').textContent=ctx.doc?'Saved privately to your Claude account. Other users cannot see it.':'Saved in this browser under your name. Other names here cannot see it.'}
+$('sf').onsubmit=async e=>{e.preventDefault();const p=$('spin').value.trim();
+ if(ctx.doc&&p){if(p.toLowerCase()=='off')delete S.set.pin;else if(/^\d{4,8}$/.test(p))S.set.pin=await hash(p);else return toast('PIN must be 4 to 8 digits.')}
+ $('spin').value='';S.set.name=$('sname').value.trim()||S.set.name;S.set.red=+$('sred').value;S.set.or=Math.max(+$('sor').value,S.set.red+1);$('hi').textContent='Hi, '+S.set.name;persist();render();toast('Settings saved.')};
+$('smp').onclick=()=>{const t=Date.now();S.items.push(
+ {id:t+1,n:'Strawberries',c:'Fruit',q:1,d:iso(2)},{id:t+2,n:'Milk',c:'Dairy',q:2,d:iso(8)},{id:t+3,n:'Tomatoes',c:'Vegetables',q:6,d:iso(1)},{id:t+4,n:'Biscuits',c:'Snacks',q:3,d:iso(45)},{id:t+5,n:'Bread',c:'Bakery',q:1,d:iso(-1)});
+ persist();render();toast('Sample food added.')};
+$('rst').onclick=()=>{if(confirm('Delete all your food, history and shopping list?')){S=Object.assign(blank(),{set:S.set});persist();render()}};
+$('exp').onclick=async()=>{
+ const rows=[['Name','Category','Quantity','Expiry']].concat(sorted().map(i=>[i.n,i.c,i.q,i.d])).map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+ try{const d=window.claude&&await claude.use('downloads');if(!d){toast('Download is not available here.');return}await d.save({filename:'expirex.csv',data:rows})}catch(e){toast('Download cancelled.')}};
+
+/* add */
+let img='';
+$('ph').onchange=e=>{const f=e.target.files[0];img='';if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),s=Math.min(1,120/Math.max(im.width,im.height));c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);img=c.toDataURL('image/jpeg',.7)};im.src=r.result};r.readAsDataURL(f)};
+$('f').onsubmit=e=>{e.preventDefault();S.items.push({id:Date.now(),n:$('n').value.trim(),c:$('c').value,q:+$('qty').value||1,d:$('d').value,img});
+ persist();e.target.reset();$('qty').value=1;img='';$('bc').value='';toast('Added.');go('home')};
+function lookup(code){const h=BAR[code.trim()];$('bcn').textContent=h?`Found: ${h[0]}. Add the quantity and expiry date.`:'Barcode not in the demo list. Enter the details by hand.';if(h){$('n').value=h[0];$('c').value=h[1];$('d').focus()}}
+$('lk').onclick=()=>lookup($('bc').value);
+let stream=null,scanning=false;
+function stopScan(){scanning=false;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$('vid').classList.add('hide')}
+$('sc').onclick=async()=>{if(scanning)return stopScan();
+ if(!('BarcodeDetector' in window)||!navigator.mediaDevices){$('bcn').textContent="Camera scanning isn't supported in this browser. Type the barcode number instead.";return}
+ try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});const v=$('vid');v.srcObject=stream;v.classList.remove('hide');await v.play();scanning=true;const det=new BarcodeDetector();
+  (async function tick(){if(!scanning)return;try{const r=await det.detect(v);if(r.length){$('bc').value=r[0].rawValue;lookup(r[0].rawValue);stopScan();return}}catch(e){}setTimeout(tick,300)})()}
+ catch(e){$('bcn').textContent='Camera access was blocked. Allow it in your browser, or type the barcode.'}};
+
+/* interactive bits */
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function burst(x,y,em){if(RM)return;for(let i=0;i<14;i++){const s=document.createElement('span');s.className='cf';s.textContent=em[i%em.length];const a=Math.random()*6.28,d=60+Math.random()*90;s.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-40}px;--r:${Math.random()*360}deg`;document.body.appendChild(s);setTimeout(()=>s.remove(),1000)}}
+function ring(n,c){const o=S.set.or||14,L=100.5,p=n<0?1:Math.max(.08,Math.min(1,n/o));return `<svg width="46" height="46" viewBox="0 0 40 40" style="margin-left:auto;flex:none" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="20" cy="20" r="16" fill="none" stroke="${c}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-p)}" transform="rotate(-90 20 20)"/><text x="20" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">${n<0?'!':n}</text></svg>`}
+$('grid').onpointermove=e=>{if(RM||e.pointerType==='touch')return;const c=e.target.closest('.item');if(!c)return;const r=c.getBoundingClientRect();c.style.transform=`perspective(700px) rotateY(${((e.clientX-r.left)/r.width-.5)*8}deg) rotateX(${((e.clientY-r.top)/r.height-.5)*-8}deg)`};
+$('grid').onpointerout=e=>{const c=e.target.closest('.item');if(c)c.style.transform=''};
+$('rec').onclick=e=>{const b=e.target.closest('[data-cook]');if(!b)return;const r=REC[+b.dataset.cook],snap=JSON.stringify(S);
+ S.items.filter(i=>days(i)>=0&&r.k.test(i.n)).forEach(i=>{i.q--;if(i.q<1){log(i,'used');S.items=S.items.filter(x=>x!==i)}});
+ burst(e.clientX,e.clientY,['🍳','😋','✨']);persist();render();toast('Cooked '+r.n+'. Ingredients updated.',()=>{S=JSON.parse(snap);persist();render()})};
+const QK=[['🥛','Milk','Dairy',7],['🍞','Bread','Bakery',5],['🥚','Eggs','Meat & eggs',21],['🍓','Strawberries','Fruit',4],['🍅','Tomatoes','Vegetables',7],['🍌','Bananas','Fruit',5],['🧀','Cheese','Dairy',30],['🥕','Carrots','Vegetables',14]];
+$('qk').innerHTML=QK.map((q,i)=>`<button type="button" class="chip" data-i="${i}">${q[0]} ${q[1]}</button>`).join('');
+$('qk').onclick=e=>{const b=e.target.closest('button');if(!b)return;const q=QK[b.dataset.i];$('n').value=q[1];$('c').value=q[2];$('d').value=iso(q[3]);$('qty').focus()};
+let CM=new Date(today().getFullYear(),today().getMonth(),1),CSEL=iso(0);
+function cal(){const y=CM.getFullYear(),m=CM.getMonth(),dim=new Date(y,m+1,0).getDate();
+ let h=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<small class="note" style="text-align:center">${d}</small>`).join('');
+ for(let i=0;i<CM.getDay();i++)h+='<span></span>';
+ for(let d=1;d<=dim;d++){const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),its=S.items.filter(i=>i.d==ds);
+  h+=`<button class="cd ${ds==iso(0)?'t':''} ${ds==CSEL?'s':''}" data-d="${ds}">${d}<span>${its.slice(0,4).map(i=>`<i class="dot" style="background:${status(days(i)).c}"></i>`).join('')}</span></button>`}
+ $('cgrid').innerHTML=h;$('cmon').textContent=CM.toLocaleString('en',{month:'long',year:'numeric'});
+ const its=S.items.filter(i=>i.d==CSEL);
+ $('cday').innerHTML=`<b>${CSEL}</b>`+(its.length?its.map(i=>`<div class="shop"><span>${CATS[i.c]||''} ${esc(i.n)} · Qty ${i.q}</span></div>`).join(''):'<p class="note">Nothing expires on this day.</p>')}
+$('cgrid').onclick=e=>{const b=e.target.closest('[data-d]');if(b){CSEL=b.dataset.d;cal()}};
+$('cprev').onclick=()=>{CM=new Date(CM.getFullYear(),CM.getMonth()-1,1);cal()};
+$('cnext').onclick=()=>{CM=new Date(CM.getFullYear(),CM.getMonth()+1,1);cal()};
+$('scene').onclick=e=>{const f=e.target.closest('.f');if(!f)return;burst(e.clientX,e.clientY,[f.textContent]);f.style.visibility='hidden';setTimeout(()=>f.style.visibility='',1500)};
+/* 3D login scene */
+$('scene').innerHTML=['🍦','🍫','🍕','🥑','🍎','🍓','🥕','🥦','🍩','🧀','🍋','🥐'].map((e,i)=>`<span class="f" style="left:${(i%4)*25+4+Math.random()*8}%;top:${Math.floor(i/4)*32+6+Math.random()*10}%;--s:${48+Math.random()*50}px;--z:${Math.round(-120+Math.random()*260)}px;--d:${3+Math.random()*3}s;animation-delay:-${Math.random()*4}s">${e}</span>`).join('');
+$('login').addEventListener('pointermove',e=>{$('scene').style.transform=`rotateY(${(e.clientX/innerWidth-.5)*16}deg) rotateX(${(e.clientY/innerHeight-.5)*-12}deg)`});
+start();
+</script></body></html>
